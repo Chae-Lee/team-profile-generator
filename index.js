@@ -11,6 +11,9 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
+const isEngineer = (answers) => answers.employees === 'Add an Engineer'
+const isIntern = (answers) => answers.employees === 'Add an Intern'
+
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 const questions = [
@@ -39,37 +42,56 @@ const questions = [
     name:'employees',
     message:'Please select the type of employee you would like to create a profile of',
     choices:['Add an Engineer', 'Add an Intern', 'Finish building the team']
-  }
+  },
+  {
+    type:'input',
+    name:'engineerName',
+    message:'What is the name of the engineer?',
+    when: isEngineer
+  },
+  {
+    type:'input',
+    name:'id',
+    message:'What is the employee ID',
+    when: isEngineer
+  },
+  {
+    type:'input',
+    name:'email',
+    message:'Enter the email address for the engineer',
+    when: isEngineer
+  },
+  {
+    type:'input',
+    name:'github',
+    message:'Please input GitHub username',
+    when: isEngineer
+  },
+  {
+    type:'input',
+    name:'internName',
+    message:'What is the name of the intern?',
+    when: isIntern
+  },
+  {
+    type:'input',
+    name:'employeeID',
+    message:'What is the employee ID',
+    when: isIntern
+  },
+  {
+    type:'input',
+    name:'email',
+    message:'Enter the email address for the intern',
+    when: isIntern
+  },
+  {
+    type:'input',
+    name:'school',
+    message:'Enter the name of the school',
+    when: isIntern
+  },
 ];
-
-//refactor this code - it has error
-if (questions[5][0] === 'Add an Engineer'){
-  const engineerQuestions = [
-    {
-      type:'input',
-      name:'engineerName',
-      message:'What is the name of the engineer?'
-    },
-    {
-      type:'input',
-      name:'id',
-      message:'What is the employee ID',
-    },
-    {
-      type:'input',
-      name:'email',
-      message:'What is your email address?'
-    },
-    {
-      type:'input',
-      name:'github',
-      message:'Please input GitHub username'
-    }
-  ];
-};
-
-//when the questions[5][0] is selected another array of questions are asked for Engineers
-//when the questions[5][1] is selected another array of questions are asked for Interns
 
 function writeToFile(fileName, data) {
   fs.writeFile (fileName, data, (err) => {
