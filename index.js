@@ -11,8 +11,10 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
-const isEngineer = (answers) => answers.employees === 'Add an Engineer'
-const isIntern = (answers) => answers.employees === 'Add an Intern'
+const isEngineer = (answers) => answers.employees === 'Add an Engineer';
+const isIntern = (answers) => answers.employees === 'Add an Intern';
+const anotherEmployee = (answers) => answers.anotherEmployee === 'Yes';
+const noMoreEmployee = (answers) => answers.anotherEmployee === 'No';
 
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
@@ -41,7 +43,7 @@ const questions = [
     type:'list',
     name:'employees',
     message:'Please select the type of employee you would like to create a profile of',
-    choices:['Add an Engineer', 'Add an Intern', 'Finish building the team']
+    choices:['Add an Engineer', 'Add an Intern', 'Finish building the team'],
   },
   {
     type:'input',
@@ -90,6 +92,20 @@ const questions = [
     name:'school',
     message:'Enter the name of the school',
     when: isIntern
+  },
+  {
+    type:'list',
+    name:'anotherEmployee',
+    message:'Would you like to add another employee?',
+    choices:['Yes', 'No'],
+    when: isEngineer, isIntern
+  },
+  {
+    type:'list',
+    name:'employees',
+    message:'Please select the type of employee you would like to create a profile of',
+    choices:['Add an Engineer', 'Add an Intern', 'Finish building the team'],
+    when: anotherEmployee
   },
 ];
 
