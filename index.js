@@ -13,9 +13,9 @@ const render = require("./src/page-template.js");
 
 const isEngineer = (answers) => answers.employees === 'Add an Engineer';
 const isIntern = (answers) => answers.employees === 'Add an Intern';
-const anotherEmployee = (answers) => answers.anotherEmployee === 'Yes';
-const noMoreEmployee = (answers) => answers.anotherEmployee === 'No';
-const employeeType = (answers) => answers.employeeType
+const anotherEmployee = (engineerAnswers) => engineerAnswers.anotherEmployee === 'Yes';
+const anotherEmployeeTwo = (internAnswers) => internAnswers.anotherEmployee === 'Yes';
+
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 const questions = [
@@ -45,82 +45,74 @@ const questions = [
     message:'Please select the type of employee you would like to create a profile of',
     choices:['Add an Engineer', 'Add an Intern', 'Finish building the team'],
   },
+]
+
+const engineerQuestions = [
   {
     type:'input',
     name:'engineerName',
     message:'What is the name of the engineer?',
-    when: isEngineer
   },
   {
     type:'input',
     name:'id',
     message:'What is the employee ID',
-    when: isEngineer
   },
   {
     type:'input',
     name:'email',
     message:'Enter the email address for the engineer',
-    when: isEngineer
   },
   {
     type:'input',
     name:'github',
     message:'Please input GitHub username',
-    when: isEngineer
   },
+  {
+    type:'list',
+    name:'anotherEmployee',
+    message:'Would you like to add another employee?',
+    choices:['Yes', 'No'],
+  },
+]
+
+const internQuestions = [
   {
     type:'input',
     name:'internName',
     message:'What is the name of the intern?',
-    when: isIntern
   },
   {
     type:'input',
     name:'employeeID',
     message:'What is the employee ID',
-    when: isIntern
   },
   {
     type:'input',
     name:'email',
     message:'Enter the email address for the intern',
-    when: isIntern
   },
   {
     type:'input',
     name:'school',
     message:'Enter the name of the school',
-    when: isIntern
   },
   {
     type:'list',
     name:'anotherEmployee',
     message:'Would you like to add another employee?',
     choices:['Yes', 'No'],
-    when: isEngineer
   },
-  {
-    type:'list',
-    name:'anotherEmployee',
-    message:'Would you like to add another employee?',
-    choices:['Yes', 'No'],
-    when: isIntern
-  },
-  // {
-  //   type:'list',
-  //   name:'employees',
-  //   message:'Please select the type of employee you would like to create a profile of',
-  //   choices:['Add an Engineer', 'Add an Intern', 'Finish building the team'],
-  //   when: anotherEmployee
-  // },
 ];
 
-if (anotherEmployee === 'Yes') {
-  return questions.employees
-} else {
-  init();
-};
+const addingEmployeeQuestion = [
+  {
+    type:'list',
+    name:'employees',
+    message:'Please select the type of employee you would like to create a profile of',
+    choices:['Add an Engineer', 'Add an Intern', 'Finish building the team'],
+  },
+];
 
 function writeToFile(fileName, data) {
   fs.writeFile (fileName, data, (err) => {
@@ -131,10 +123,36 @@ function writeToFile(fileName, data) {
 function init() {
   inquirer.prompt(questions).then((answers) => {
     console.log(answers);
-    console.log('Generating a HTML file...');
-    writeToFile('team.html', team(answers));
+    if (isEngineer) {
+      inquirer.prompt(engineerQuestions).then((engineerAnswers)=> {
+        console.log(engineerAnswers);
+        if (anotherEmployee){
+          inquirer.prompt(addingEmployeeQuestion).then((addingQuestion)=> {
+            console.log(addingQuestion);
+          })
+        } else {
+          console.log('Generating a HTML file...');
+          writeToFile('team.html', team(answers));
+        }
+      });
+    } else if (isIntern){
+      inquirer.prompt(internQuestions).then((internAnswers) => {
+        console.log(internAnswers);
+        if (anotherEmployeeTwo){
+          inquirer.prompt(addingEmployeeQuestion).then((addingQuestionTwo)=>{
+            console.log(addingQuestionTwo);
+          })
+        } else {
+          console.log('Generating a HTML file...');
+          writeToFile('team.html', team(answers));
+        }
+      });
+    } else {
+      console.log('Generating a HTML file...');
+      writeToFile('team.html', team(answers));
+    }
   });
 }
 
-// init();
+init();
 
