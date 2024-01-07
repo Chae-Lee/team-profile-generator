@@ -11,13 +11,12 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
-const isEngineer = (answers) => answers.employees === 'Add an Engineer';
-const isIntern = (answers) => answers.employees === 'Add an Intern';
+// const isEngineer = (answers) => answers.employees === 'Add an Engineer';
+// const isIntern = (answers) => answers.employees === 'Add an Intern';
 const anotherEmployee = (engineerAnswers) => engineerAnswers.anotherEmployee === 'Yes';
 const anotherEmployeeTwo = (internAnswers) => internAnswers.anotherEmployee === 'Yes';
-const additionalEmployee = (additionalAnswer) => addingEmployeeQuestion.employees === isEngineer && isIntern;
-
-console.log(additionalEmployee);
+const additionalEngineer = (additionalAnswer) => addingEmployeeQuestion.moreEmployees === 'Add an Engineer';
+const additionalIntern = (additionalAnswer) => addingEmployeeQuestion.moreEmployees === 'Add an Intern';
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 const questions = [
@@ -110,61 +109,62 @@ const internQuestions = [
 const addingEmployeeQuestion = [
   {
     type:'list',
-    name:'employees',
+    name:'moreEmployees',
     message:'Please select the type of employee you would like to create a profile of',
     choices:['Add an Engineer', 'Add an Intern', 'Finish building the team'],
   },
 ];
 
-function writeToFile(fileName, data) {
+const writeToFile = (fileName, data) => {
   fs.writeFile (fileName, data, (err) => {
     console.log ('testing');
   });
+};
+
+const employeeAddition = (additionalAnswer) => {
+  inquirer.prompt(addingEmployeeQuestion).then((additionalAnswer)=> {
+  console.log(additionalAnswer);
+  if (additionalAnswer.moreEmployees === 'Add an Engineer'){
+    engineerAddition();
+  } else if (additionalAnswer.moreEmployees === 'Add an Intern'){
+    internAddition();
+  } else {
+    console.log('Generating a HTML file...');
+    writeToFile();
+  };
+})
+};
+
+const engineerAddition = (engineerAnswers) => {
+  inquirer.prompt(engineerQuestions).then((engineerAnswers)=> {
+    console.log(engineerAnswers);
+    employeeAddition();
+    if (internAnswers.anotherEmployee !== 'Yes'){
+      console.log('Generating a HTML file...');
+      writeToFile();
+    }
+  })
+};
+
+const internAddition = (internAnswers) => {
+  inquirer.prompt(internQuestions).then((internAnswers)=> {
+    console.log(internAnswers);
+    employeeAddition();
+    if (internAnswers.anotherEmployee !== 'Yes'){
+      console.log('Generating a HTML file...');
+      writeToFile();
+    }
+  })
 }
 
-// function addingEmployees () {
-//   if (isEngineer){
-//     inquirer.prompt(engineerQuestions).then((engineerAnswers)=> {
-//       console.log(engineerAnswers);
-//     })
-//   } else if (isIntern){
-//     inquirer.prompt(internQuestions).then((internAnswers)=> {
-//       console.log(internAnswers);
-//     })
-//   } else {
-//     console.log('Generating a HTML file...');
-//       writeToFile('team.html', team(answers));
-//   }
-// };
 
-function init() {
+const init = () => {
   inquirer.prompt(questions).then((answers) => {
     console.log(answers);
-    // addingEmployees();
-    if (isEngineer) {
-      inquirer.prompt(engineerQuestions).then((engineerAnswers)=> {
-        console.log(engineerAnswers);
-        if (anotherEmployee){
-          inquirer.prompt(addingEmployeeQuestion).then((additionalAnswer)=> {
-            console.log(additionalAnswer);
-          })
-        } else {
-          console.log('Generating a HTML file...');
-          writeToFile('team.html', team(answers));
-        }
-      });
-    } else if (isIntern){
-      inquirer.prompt(internQuestions).then((internAnswers) => {
-        console.log(internAnswers);
-        if (anotherEmployeeTwo){
-          inquirer.prompt(addingEmployeeQuestion).then((additionalAnswer)=>{
-            console.log(additionalAnswer);
-          })
-        } else {
-          console.log('Generating a HTML file...');
-          writeToFile('team.html', team(answers));
-        }
-      });
+    if (answers.employees === 'Add an Engineer') {
+      engineerAddition();
+    } else if (answers.employees === 'Add an Intern'){
+      internAddition();
     } else {
       console.log('Generating a HTML file...');
       writeToFile('team.html', team(answers));
