@@ -15,7 +15,9 @@ const isEngineer = (answers) => answers.employees === 'Add an Engineer';
 const isIntern = (answers) => answers.employees === 'Add an Intern';
 const anotherEmployee = (engineerAnswers) => engineerAnswers.anotherEmployee === 'Yes';
 const anotherEmployeeTwo = (internAnswers) => internAnswers.anotherEmployee === 'Yes';
+const additionalEmployee = (additionalAnswer) => addingEmployeeQuestion.employees === isEngineer && isIntern;
 
+console.log(additionalEmployee);
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 const questions = [
@@ -120,15 +122,31 @@ function writeToFile(fileName, data) {
   });
 }
 
+// function addingEmployees () {
+//   if (isEngineer){
+//     inquirer.prompt(engineerQuestions).then((engineerAnswers)=> {
+//       console.log(engineerAnswers);
+//     })
+//   } else if (isIntern){
+//     inquirer.prompt(internQuestions).then((internAnswers)=> {
+//       console.log(internAnswers);
+//     })
+//   } else {
+//     console.log('Generating a HTML file...');
+//       writeToFile('team.html', team(answers));
+//   }
+// };
+
 function init() {
   inquirer.prompt(questions).then((answers) => {
     console.log(answers);
+    // addingEmployees();
     if (isEngineer) {
       inquirer.prompt(engineerQuestions).then((engineerAnswers)=> {
         console.log(engineerAnswers);
         if (anotherEmployee){
-          inquirer.prompt(addingEmployeeQuestion).then((addingQuestion)=> {
-            console.log(addingQuestion);
+          inquirer.prompt(addingEmployeeQuestion).then((additionalAnswer)=> {
+            console.log(additionalAnswer);
           })
         } else {
           console.log('Generating a HTML file...');
@@ -139,8 +157,8 @@ function init() {
       inquirer.prompt(internQuestions).then((internAnswers) => {
         console.log(internAnswers);
         if (anotherEmployeeTwo){
-          inquirer.prompt(addingEmployeeQuestion).then((addingQuestionTwo)=>{
-            console.log(addingQuestionTwo);
+          inquirer.prompt(addingEmployeeQuestion).then((additionalAnswer)=>{
+            console.log(additionalAnswer);
           })
         } else {
           console.log('Generating a HTML file...');
