@@ -43,5 +43,6 @@
 # The final deployed application should look like this
 
 <b> URL to the deployed Application </b>
+https://chae-lee.github.io/team-profile-generator/
 
 ![Screenshot of team profile generator webpage](./assets/images/teamprofile-generator-screenshot.png)
